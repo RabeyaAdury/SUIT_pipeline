@@ -1,11 +1,32 @@
 function suit_connectivity(outputDir, refDir, sub, conn_map)
-    % Add SUIT toolbox to path
+% SUIT_CONNECTIVITY
+%
+% Transforms a subject-level functional connectivity map from subject
+% space into SUIT template space using previously estimated SUIT
+% transformation files.
+%
+% Inputs:
+%   output_dir - Subject/run directory containing SUIT transformation files
+%   suit_dir   - Path to the SUIT toolbox
+%   subj       - Subject identifier
+%   conn_map   - Subject-level functional connectivity map
+%
+% Requirements:
+%   MATLAB
+%   SPM12
+%   SUIT toolbox
+%% Initialize SPM and SUIT
     addpath(genpath(refDir));
     spm fmri
-    % Ensure output directory exists
-    if ~exist(outputDir, 'dir')
-        mkdir(outputDir);
-    end
+
+%% Verify input directory and connectivity map
+if ~exist(output_dir, 'dir')
+    error('Output directory does not exist: %s', output_dir);
+end
+
+if ~exist(conn_map, 'file')
+    error('Connectivity map not found: %s', conn_map);
+end
  %   disp('Running SUIT segmentation...');
  %   suit_subj_dir = fullfile(outputDir, 'suit_segmentation');
  %   if ~exist(suit_subj_dir, 'dir')
