@@ -1,12 +1,36 @@
 function roi_suit_to_sub(data_dir, refDir, subj, T1img, statsImg)
-    % Add SUIT toolbox to path
+% ROI_SUIT_TO_SUBJECT
+%
+% Performs subject-level SUIT processing and transforms cerebellar ROIs
+% from SUIT template space into individual subject space.
+%
+% Processing steps:
+%   1. Isolate and segment the cerebellum from the T1-weighted image
+%   2. Estimate normalization to SUIT template space using DARTEL
+%   3. Reslice the functional/statistical image into SUIT space
+%   4. Inverse-warp SUIT-space ROIs into subject space
+%
+% Inputs:
+%   data_dir  - Subject/run directory containing anatomical and fMRI data
+%   suit_dir  - Path to the SUIT toolbox
+%   roi_dir   - Directory containing SUIT-space ROI masks
+%   subj      - Subject identifier
+%   T1img     - Subject T1-weighted image
+%   statsImg  - Subject-level statistical image
+%
+% Requirements:
+%   MATLAB
+%   SPM12
+%   SUIT toolbox
+%% Initialize SPM and SUIT
     addpath(genpath(refDir));
     spm fmri
-    roiDir='/media/mcuser/CardiB_Data3/CHU/Ref_images/SUIT_template/Lobule_atlas/7ROIs_5mm';
-    
-    roiFiles= cellstr(spm_select('FPList', roiDir, '\.nii$'));  %spm_select returns character array, celltstr converts it in string
-    %% Step 1: SUIT Segmentation (Isolate cerebellum & segment T1)
-    disp('Running SUIT segmentation...');
+% Identify ROI files
+roi_files = cellstr(spm_select('FPList', roi_dir, '\.nii$'));
+
+    if isempty(roi_files)
+        error('No ROI files found in: %s', roi_dir);
+    end
     % Run cerebellum isolation & segmentation
     suit_isolate_seg({T1img});
     disp('processing');
@@ -19,7 +43,7 @@ function roi_suit_to_sub(data_dir, refDir, subj, T1img, statsImg)
         error('SUIT segmentation failed: required files not found.');
     end
 
-    %% Step 2: Normalization to SUIT Template
+    %% Step 2:  Normalize subject anatomy to SUIT space
     disp('Performing SUIT normalization...');
     job.subjND.gray = {grey};
     job.subjND.white = {white};
