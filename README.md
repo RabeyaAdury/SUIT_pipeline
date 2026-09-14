@@ -1,10 +1,10 @@
-**This is the updated version of SUIT (uses updated suit 12 toolbox/functions)
+
+*This is the updated version of SUIT (uses updated suit 12 toolbox/functions)
 The matlab scripts are roi_suit_to_sub.m --- to get the rois transferred suit space to subject space.
 The script is basically for connectivity, by product it will have beta coefficient file in SUIT space.
 Once the rois are in subject space, it runs bash script to get connectivity maps
 These scripts are in /media/mcuser/CardiB_Data3/CHU/Ref_scripts/spm12/toolbox/suit/ roi_suit_to_sub.m
-The driver bash script is in /media/mcuser/CardiB_Data3/CHU/Chu_scripts/fMRI/SUIT_connectivity_corr_Adury.sh**
------------------
+The driver bash script is in /media/mcuser/CardiB_Data3/CHU/Chu_scripts/fMRI/SUIT_connectivity_corr_Adury.sh*
 Main steps-
 1.Have anatomical in LPI and AC origin
 2. Have EPI in LPI
