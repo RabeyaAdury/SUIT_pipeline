@@ -1,28 +1,90 @@
+# SUIT Cerebellar Functional Connectivity Pipeline
 
-*This is the updated version of SUIT (uses updated suit 12 toolbox/functions)
-The matlab scripts are roi_suit_to_sub.m --- to get the rois transferred suit space to subject space.
-The script is basically for connectivity, by product it will have beta coefficient file in SUIT space.
-Once the rois are in subject space, it runs bash script to get connectivity maps
-These scripts are in /media/mcuser/CardiB_Data3/CHU/Ref_scripts/spm12/toolbox/suit/ roi_suit_to_sub.m
-The driver bash script is in /media/mcuser/CardiB_Data3/CHU/Chu_scripts/fMRI/SUIT_connectivity_corr_Adury.sh*
+## Overview
 
+This repository contains a cerebellar functional connectivity pipeline that I developed using MATLAB, Bash, AFNI, SPM12, and the SUIT toolbox.
 
-Main steps-
-1.Have anatomical in LPI and AC origin
-2. Have EPI in LPI
-3. Run SUIT preprocessing steps for afni proc py. Only difference between the whole brain with SUIT afni proc py is, SUIT proc py won’t warp the anatomical in MNI space and won’t do blur.—the afni proc py will generate errts and stats file for connectivity and BOLD respectively.
-The folder architecture is—Subject—scan (same1/same2)---> errts, anat and stats file. 
-Note that,  a maskSUIT_3mm.nii template is expected in the $dir folder for resampling the output connectivity map.
+The pipeline transforms cerebellar ROIs from SUIT template space into individual subject space, performs seed-based functional connectivity analysis using preprocessed fMRI time series, and transforms the resulting connectivity maps back into SUIT space for cerebellum-specific analysis.
 
+## Workflow
 
-Additional tips—may have some redundancy
-We need preprocessed data for the connectivity analysis (errts). We also need anatomical file in the same folder. The anatomical file needs to be in LPI orientation and centered in the anterior commissure. Run copy_file_stage1 for copying the files and have it in LPI orientation. To set the origin on the AC, we need to manually set it. So load spm fmri in matlab and set the display for the LPI T1 image. And manually click on the AC and press set origin. For changing directories, go on the list of previous directories and click on the last one. From there, go up (..) one directory … move from there. 
-Click on the set origin, then set orientation and done. Don’t need to save the matrix unless you want to use it, so click no.
- 
+1. **Cerebellar segmentation and normalization**
+   - Isolates and segments the cerebellum from the subject's T1-weighted image.
+   - Estimates normalization between individual anatomy and SUIT template space.
 
-In the bash script, edit dir (where preprocessed data is)
-refDir- where the suit toolbox/functions are.
-ROI_dir= the rois/seed that will be used to for the connectivity analysis
-ROI= for roi names. Create txt file with roi names, same as the nii file for rois.
-Subj= to cat the text file.
+2. **SUIT ROI → Subject Space**
+   - Inverse-warps predefined cerebellar ROIs from SUIT space into individual subject space.
 
+3. **Seed-Based Functional Connectivity**
+   - Resamples each ROI to the fMRI data.
+   - Extracts the mean ROI time series.
+   - Computes seed-to-voxel Pearson correlations.
+   - Applies Fisher r-to-z transformation.
+
+4. **Subject Space → SUIT Space**
+   - Transforms subject-level connectivity maps into SUIT space.
+   - Resamples and spatially smooths the connectivity maps for downstream analysis.
+
+## Pipeline Overview
+
+SUIT-space ROI  
+↓  
+Subject-space ROI  
+↓  
+ROI time-series extraction  
+↓  
+Seed-to-voxel correlation  
+↓  
+Fisher z transformation  
+↓  
+Subject-level connectivity map  
+↓  
+SUIT-space transformation  
+↓  
+Resampling and smoothing
+
+## Scripts
+
+### `roi_suit_to_sub.m`
+Performs cerebellar isolation/segmentation and SUIT normalization, reslices the functional statistical image into SUIT space, and inverse-warps SUIT-space ROIs into individual subject space.
+
+### `SUIT_connectivity_corr_Adury.sh`
+Main Bash driver that coordinates processing across subjects, runs, and cerebellar seeds. It performs ROI-based time-series extraction, seed-to-voxel correlation, Fisher z transformation, SUIT-space transformation, resampling, and smoothing.
+
+### `suit_connectivity.m`
+Transforms subject-level functional connectivity maps into SUIT template space using the previously estimated affine and DARTEL transformations.
+
+## Requirements
+
+- MATLAB
+- SPM12
+- SUIT toolbox
+- AFNI
+- Bash/Linux
+
+## Input Data
+
+The pipeline requires:
+
+- Preprocessed fMRI residual time series
+- T1-weighted anatomical images
+- Subject-level statistical maps
+- Cerebellar ROIs defined in SUIT space
+- Subject and ROI lists
+
+The anatomical images used in this workflow are LPI-oriented and centered at the anterior commissure.
+
+## Output
+
+The pipeline generates subject-level:
+
+- Cerebellar ROIs transformed into subject space
+- ROI mean time series
+- Seed-to-voxel correlation maps
+- Fisher z-transformed connectivity maps
+- Connectivity maps transformed into SUIT space
+- Resampled and spatially smoothed maps for downstream analysis
+
+## Notes
+
+This pipeline was developed for my research analyses. Study-specific data, subject identifiers, and internal computing paths are not included in the public repository. Dataset-specific parameters, including ROI definitions, spatial resolution, smoothing, and file naming conventions, should be modified as appropriate for other datasets.
