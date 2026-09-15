@@ -25,23 +25,6 @@ The pipeline transforms cerebellar ROIs from SUIT template space into individual
    - Transforms subject-level connectivity maps into SUIT space.
    - Resamples and spatially smooths the connectivity maps for downstream analysis.
 
-## Pipeline Overview
-
-SUIT-space ROI  
-↓  
-Subject-space ROI  
-↓  
-ROI time-series extraction  
-↓  
-Seed-to-voxel correlation  
-↓  
-Fisher z transformation  
-↓  
-Subject-level connectivity map  
-↓  
-SUIT-space transformation  
-↓  
-Resampling and smoothing
 
 ## Scripts
 ### `SUIT_connectivity_corr.sh`
