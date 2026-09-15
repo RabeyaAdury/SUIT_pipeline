@@ -44,12 +44,11 @@ SUIT-space transformation
 Resampling and smoothing
 
 ## Scripts
+### `SUIT_connectivity_corr.sh`
+Main Bash driver that coordinates processing across subjects, runs, and cerebellar seeds. It performs ROI-based time-series extraction, seed-to-voxel correlation, Fisher z transformation, SUIT-space transformation, resampling, and smoothing.
 
 ### `roi_suit_to_sub.m`
 Performs cerebellar isolation/segmentation and SUIT normalization, reslices the functional statistical image into SUIT space, and inverse-warps SUIT-space ROIs into individual subject space.
-
-### `SUIT_connectivity_corr_Adury.sh`
-Main Bash driver that coordinates processing across subjects, runs, and cerebellar seeds. It performs ROI-based time-series extraction, seed-to-voxel correlation, Fisher z transformation, SUIT-space transformation, resampling, and smoothing.
 
 ### `suit_connectivity.m`
 Transforms subject-level functional connectivity maps into SUIT template space using the previously estimated affine and DARTEL transformations.
